@@ -7,6 +7,7 @@ option go_package = "proto/";
 service BlogService {
     rpc CreatePost(CreatePostRequest) returns (Post);
     rpc ReadPost(ReadPostRequest) returns (Post);
+    rpc ReadAllPost(ReadAllPostRequest) returns (ReadAllPostResponse);
     rpc UpdatePost(UpdatePostRequest) returns (Post);
     rpc DeletePost(DeletePostRequest) returns (DeletePostResponse);
 }
@@ -32,6 +33,10 @@ message ReadPostRequest {
     string post_id = 1;
 }
 
+message ReadAllPostRequest{
+    
+}
+
 message UpdatePostRequest {
     string post_id = 1;
     string title = 2;
@@ -46,4 +51,8 @@ message DeletePostRequest {
 
 message DeletePostResponse {
     bool success = 1;
+}
+
+message ReadAllPostResponse{
+    repeated Post posts = 1;
 }

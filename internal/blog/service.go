@@ -80,3 +80,16 @@ func (s *Server) DeletePost(ctx context.Context, req *proto.DeletePostRequest) (
 
 	return &proto.DeletePostResponse{}, nil
 }
+
+func (s *Server)ReadAllPost(ctx context.Context, req *proto.ReadAllPostRequest)(*proto.ReadAllPostResponse,error){
+	log.Println("Read All Post Invoked")
+
+	posts, err := s.postRepo.ReadAllPost(ctx)
+	if err != nil{
+		return nil, err
+	}
+	return &proto.ReadAllPostResponse{
+		Posts: posts,
+	},nil
+
+}

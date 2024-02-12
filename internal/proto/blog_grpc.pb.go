@@ -19,10 +19,11 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	BlogService_CreatePost_FullMethodName = "/blog.BlogService/CreatePost"
-	BlogService_ReadPost_FullMethodName   = "/blog.BlogService/ReadPost"
-	BlogService_UpdatePost_FullMethodName = "/blog.BlogService/UpdatePost"
-	BlogService_DeletePost_FullMethodName = "/blog.BlogService/DeletePost"
+	BlogService_CreatePost_FullMethodName  = "/blog.BlogService/CreatePost"
+	BlogService_ReadPost_FullMethodName    = "/blog.BlogService/ReadPost"
+	BlogService_ReadAllPost_FullMethodName = "/blog.BlogService/ReadAllPost"
+	BlogService_UpdatePost_FullMethodName  = "/blog.BlogService/UpdatePost"
+	BlogService_DeletePost_FullMethodName  = "/blog.BlogService/DeletePost"
 )
 
 // BlogServiceClient is the client API for BlogService service.
@@ -31,6 +32,7 @@ const (
 type BlogServiceClient interface {
 	CreatePost(ctx context.Context, in *CreatePostRequest, opts ...grpc.CallOption) (*Post, error)
 	ReadPost(ctx context.Context, in *ReadPostRequest, opts ...grpc.CallOption) (*Post, error)
+	ReadAllPost(ctx context.Context, in *ReadAllPostRequest, opts ...grpc.CallOption) (*ReadAllPostResponse, error)
 	UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*Post, error)
 	DeletePost(ctx context.Context, in *DeletePostRequest, opts ...grpc.CallOption) (*DeletePostResponse, error)
 }
@@ -61,6 +63,15 @@ func (c *blogServiceClient) ReadPost(ctx context.Context, in *ReadPostRequest, o
 	return out, nil
 }
 
+func (c *blogServiceClient) ReadAllPost(ctx context.Context, in *ReadAllPostRequest, opts ...grpc.CallOption) (*ReadAllPostResponse, error) {
+	out := new(ReadAllPostResponse)
+	err := c.cc.Invoke(ctx, BlogService_ReadAllPost_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *blogServiceClient) UpdatePost(ctx context.Context, in *UpdatePostRequest, opts ...grpc.CallOption) (*Post, error) {
 	out := new(Post)
 	err := c.cc.Invoke(ctx, BlogService_UpdatePost_FullMethodName, in, out, opts...)
@@ -85,6 +96,7 @@ func (c *blogServiceClient) DeletePost(ctx context.Context, in *DeletePostReques
 type BlogServiceServer interface {
 	CreatePost(context.Context, *CreatePostRequest) (*Post, error)
 	ReadPost(context.Context, *ReadPostRequest) (*Post, error)
+	ReadAllPost(context.Context, *ReadAllPostRequest) (*ReadAllPostResponse, error)
 	UpdatePost(context.Context, *UpdatePostRequest) (*Post, error)
 	DeletePost(context.Context, *DeletePostRequest) (*DeletePostResponse, error)
 	mustEmbedUnimplementedBlogServiceServer()
@@ -99,6 +111,9 @@ func (UnimplementedBlogServiceServer) CreatePost(context.Context, *CreatePostReq
 }
 func (UnimplementedBlogServiceServer) ReadPost(context.Context, *ReadPostRequest) (*Post, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReadPost not implemented")
+}
+func (UnimplementedBlogServiceServer) ReadAllPost(context.Context, *ReadAllPostRequest) (*ReadAllPostResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadAllPost not implemented")
 }
 func (UnimplementedBlogServiceServer) UpdatePost(context.Context, *UpdatePostRequest) (*Post, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdatePost not implemented")
@@ -155,6 +170,24 @@ func _BlogService_ReadPost_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _BlogService_ReadAllPost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadAllPostRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BlogServiceServer).ReadAllPost(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BlogService_ReadAllPost_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BlogServiceServer).ReadAllPost(ctx, req.(*ReadAllPostRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _BlogService_UpdatePost_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdatePostRequest)
 	if err := dec(in); err != nil {
@@ -205,6 +238,10 @@ var BlogService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ReadPost",
 			Handler:    _BlogService_ReadPost_Handler,
+		},
+		{
+			MethodName: "ReadAllPost",
+			Handler:    _BlogService_ReadAllPost_Handler,
 		},
 		{
 			MethodName: "UpdatePost",

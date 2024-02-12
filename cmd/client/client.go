@@ -117,6 +117,14 @@ func main() {
 					fmt.Printf("error while calling DeletePost RPC: %v", err)
 				}
 				fmt.Printf("Response from DeletePost RPC: %v", deletePostResponse)
+
+			case 5:
+				fmt.Println("Reading all Post:")
+				posts,err := client.ReadAllPost(context.Background(),&proto.ReadAllPostRequest{})
+				if err != nil{
+					fmt.Printf("error while reading all posts: %v",err)
+				}
+				fmt.Printf("Response for Read All RPC: %v",posts)
 	
 			default:
 				fmt.Println("Invalid choice. Choose 1 for post, 2 for read, 3 for update, 4 for delete, or -1 to stop.")
